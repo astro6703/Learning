@@ -18,6 +18,7 @@
                 <li><a href="/Home/Photos">Photos</a></li>
                 <li><a href="/Contact/Index">Contact</a></li>
                 <li><a href="/Test/Index">Test</a></li>
+                <li><a href="/GuestBook/Index">Guest Book</a></li>
                 <li><a href="/Home/History">History</a></li>
                 <li><span id="time"></span><br/><span id="date"></span></li>
             </ul>

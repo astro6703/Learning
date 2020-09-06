@@ -5,7 +5,8 @@ type Pages = 'home'
            | 'photos'
            | 'contact'
            | 'test'
-           | 'history';
+           | 'history'
+           | 'guest-book';
 
 type PageHistory = {[key in Pages]: number;};
 
@@ -41,11 +42,12 @@ export const getGlobalHistory = (): PageHistory => {
         photos: Number(getLocalStorageValue('photos')),
         contact: Number(getLocalStorageValue('contact')),
         test: Number(getLocalStorageValue('test')),
-        history: Number(getLocalStorageValue('history'))
+        history: Number(getLocalStorageValue('history')),
+        "guest-book": Number(getLocalStorageValue('guest-book'))
     };
 };
 
-export const getSessionHistory = () => {
+export const getSessionHistory = (): PageHistory => {
     return {
         home: Number(getSessionStorageValue('home')),
         about: Number(getSessionStorageValue('about')),
@@ -54,7 +56,8 @@ export const getSessionHistory = () => {
         photos: Number(getSessionStorageValue('photos')),
         contact: Number(getSessionStorageValue('contact')),
         test: Number(getSessionStorageValue('test')),
-        history: Number(getSessionStorageValue('history'))
+        history: Number(getSessionStorageValue('history')),
+        "guest-book": Number(getSessionStorageValue('guest-book'))
     };
 };
 
