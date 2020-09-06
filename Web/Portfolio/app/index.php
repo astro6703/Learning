@@ -1,4 +1,7 @@
 <?php
+
+
+require "../vendor/autoload.php";
 include "Core/Router.php";
 
 $request = $_REQUEST;

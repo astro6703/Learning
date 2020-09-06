@@ -1,7 +1,6 @@
 <?php
 
 include "BaseRequestValidator.php";
-include "Valitron/Validator.php";
 include "ValidationResult.php";
 
 class ContactRequestValidator extends BaseRequestValidator {
@@ -10,7 +9,7 @@ class ContactRequestValidator extends BaseRequestValidator {
     }
 
     public function validate() {
-        $v = new Validator($this->post);
+        $v = new Valitron\Validator($this->post);
         $v->rule('required', ['Name', 'Email', 'Phone', 'Message', 'Date']);
         $v->rule('regex', 'Name', '/[A-Za-z]+ [A-Za-z]+ [A-Za-z]+/');
         $v->rule('email', 'Email');

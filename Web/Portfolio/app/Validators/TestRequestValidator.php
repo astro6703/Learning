@@ -1,7 +1,6 @@
 <?php
 
 include "BaseRequestValidator.php";
-include "Valitron/Validator.php";
 include "ValidationResult.php";
 
 class TestRequestValidator extends BaseRequestValidator {
@@ -10,7 +9,7 @@ class TestRequestValidator extends BaseRequestValidator {
     }
 
     public function validate() {
-        $v = new Validator($this->post);
+        $v = new Valitron\Validator($this->post);
         $v->rule('required', ['Question1', 'Question2', 'Question3', 'Name', 'Email' ]);
         $v->rule('integer', 'Question1')->rule('in', 'Question1', [ 1, 2 ]);
         $v->rule('integer', 'Question2')->rule('in', 'Question2', [ 1, 2, 3 ]);
