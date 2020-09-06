@@ -5,6 +5,7 @@
 
 #
 Web/Portfolio/app/client-side/bundles/*
+Web/Portfolio/vendor/
 Web/Portfolio/haml/*.html
 D3 practice/bundles/*
 
