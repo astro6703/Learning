@@ -6,6 +6,7 @@
     </header>
 
     <h2>Please leave your message!</h2>
+    <h3><a href="/GuestBook/Import">Or import your own list</a></h3>
 
     <?php ViewHelper::writeValidationErrorsList($viewModel->validationViewModel->errors); ?>
 
@@ -61,6 +62,30 @@
         }
         ?>
     </ol>
+    <?php
+    if (empty($viewModel->guestBookEntries)) {
+        echo "<h2>There are no messages currently</h2>";
+    } else {
+        echo "<ol class='comment-list'>";
+        foreach ($viewModel->guestBookEntries as $entry) {
+            echo "<li>";
+                echo "<div class='comment'>";
+                    echo "<div class='comment-head'>";
+                        $formattedDate = $entry->date->format("d.m.Y");
+                        $escapedName = htmlspecialchars($entry->name);
+                        $escapedEmail = htmlspecialchars($entry->email);
+                        echo "<span><p>$formattedDate - $escapedName ($escapedEmail):</p></span>";
+                    echo "</div>";
+                    echo "<div class='comment-body'>";
+                        $escapedMessage = htmlspecialchars($entry->message);
+                        echo "<span><p>$escapedMessage</p></span>";
+                    echo "</div>";
+                echo "</div>";
+            echo "</li>";
+        }
+        echo "</ol>";
+    }
+    ?>
 </section>
 
 <script src="../client-side/bundles/guest-book/index.bundle.js"></script>

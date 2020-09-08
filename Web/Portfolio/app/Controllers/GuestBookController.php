@@ -3,6 +3,7 @@
 include "Views/ViewRenderer.php";
 include "ViewModels/GuestBook/GuestBookViewModel.php";
 include "Validators/GuestBookRequestValidator.php";
+//include "Validators/GuestBookImportValidator.php";
 include "ViewModels/Shared/ValidationViewModel.php";
 
 class GuestBookController {
@@ -32,6 +33,23 @@ class GuestBookController {
                              "Guest Book",
                              $this->createViewModel($validationResult->isValid, $validationResult->errors));
     }
+
+    public function import() {
+        ViewRenderer::render("Views/GuestBook/Import.php", "Guest Book Import");
+    }
+
+//    public function importPost() {
+//        $validator = new GuestBookImportValidator($_POST);
+//        $validationResult = $validator->validate();
+//
+//        if ($validationResult->isValid) {
+//            try {
+//                $this->guestBookMessagesProvider->getAllEntries();
+//            } catch {
+//
+//            }
+//        }
+//    }
 
     private function createViewModel(bool $isValid, array $messages = array()) {
         $guestBookEntries = $this->guestBookMessagesProvider->getAllEntries();
