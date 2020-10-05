@@ -159,10 +159,11 @@ scatterplotMatrix(~deaths_by_1m+health_index+stringency_index+tests_by_1m+total_
     \caption{Матрица точечных графиков}
     \label{fig:scatterplot-matrix}
 \end{figure}
+\pagebreak
 
-Постройте уравнение зависимости для параметров индекса здравоохранения и
-количества смертей. Получим функцию: $health\_index = 75.492 + 1.136 *
-death\_by\_1m$. Построим график остатков.
+Построим уравнение зависимости количества смертей от индекса здравоохранения.
+Получим функцию: $health\_index = 75.492 + 0.007 * death\_by\_1m$. Построим
+график остатков.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.6\linewidth]{health-death-dependency-func}
@@ -173,14 +174,63 @@ death\_by\_1m$. Построим график остатков.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.6\linewidth]{health-death-dependency-graph}
-    \caption{График остатков для параметров индекс здравоохранения и количества смертей}
+    \caption{График остатков для зависимости индекса здравоохранения от количества смертей}
     \label{fig:health-death-dependency-graph}
 \end{figure}
+Наблюдается прямая умеренная зависимость индекса здравоохранения от количества
+смертей. Коэффициент корреляции Пирсона для этой связи выше коэффициента
+корреляции Спирмена.
 
-Построим уравнение множественной регрессии:
+\pagebreak
+
+Построим уравнение зависимости количества заражений от индекса
+строгости. Получим функцию: $total\_cases = 6869.94 - 14.38 * stringency\_index$.
+Построим график остатков.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.6\linewidth]{multi-reg}
+    \includegraphics[width=.6\linewidth]{total-cases-stringency-func}
+    \caption{Уравнение зависимости количества заражений от индекса строгости}
+    \label{fig:total-cases-stringency-func}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{total-cases-stringency-graph}
+    \caption{График остатков для зависимости количества заражений от индекса строгости}
+    \label{fig:total-cases-stringency-graph}
+\end{figure}
+Коэффициент корреляции Пирсона для данной связи положителен, коэффициент
+корреляции Спирмена -- отрицателен, что говорит о слабой связи между переменными
+(или отсутствии связи). По модулю коэффициенты Пирсона и Спирмена отличаются на
+0.003.
+\pagebreak
+
+Построим уравнение зависимости количества проведенных тестов от индекса
+здравоохранения. Получим функцию $total\_tests = -973681 + 15516 *
+health\_index$. Построим график остатков.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{total-tests-health-func}
+    \caption{Уравнение зависимости количества проведенных тестов от индекса здравоохрания}
+    \label{fig:total-tests-health-func}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.58\linewidth]{total-tests-health-graph}
+    \caption{График остатков для зависимости проведенных тестов от индекса здравоохрания}
+    \label{fig:total-tests-health-graph}
+\end{figure}
+Наблюдается прямая умеренная зависимость количества проведенных тестов от
+индекса здравоохрания. Коэффициент корреляции Спирмена для данной связи выше,
+чем коэффициент Пирсона.
+\pagebreak
+
+Построим уравнение множественной регрессии: $total\_death = -1206.777 + 14.757 *
+health\_index + 1.138 * stringency\_index + 0.046 * total\_cases$
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{multi-reg}
     \caption{Уравнение множественной регрессии}
     \label{fig:multi-reg}
 \end{figure}
@@ -188,31 +238,55 @@ death\_by\_1m$. Построим график остатков.
 Построим график компонента-остаток для модели множественной регрессии:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{multi-reg-graph}
+    \includegraphics[width=.6\linewidth]{multi-reg-graph}
     \caption{Графики для модели множественной регрессии}
     \label{fig:multi-reg-graph}
-\end{figure}
-
-Построение регрессии по направлению назад:
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=.8\linewidth]{aic-backward}
-    \caption{Пошаговое построение регрессии по направлению назад}
-    \label{fig:aic-backward}
 \end{figure}
 
 Построение регрессии по направлению вперед:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.8\linewidth]{aic-forward}
+    \includegraphics[width=.7\linewidth]{aic-forward}
     \caption{Пошаговое построение регрессии по направлению вперед}
     \label{fig:aic-forward}
 \end{figure}
+\pagebreak
+
+Построение регрессии по направлению назад:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.7\linewidth]{aic-backward}
+    \caption{Пошаговое построение регрессии по направлению назад}
+    \label{fig:aic-backward}
+\end{figure}
+
+Из построенных моделей можно сделать вывод, что модель, построенная по
+направлению вперед, более предпочтительна, т.к. коэффициент AIC для нее
+меньше. Уравнение: $total\_death = -1107.619 + 14.677 *
+health\_index + 0.046 * total\_cases$.
+\pagebreak
+
+Проверим коэффициент VIF:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{vif}
+    \caption{Получение коэффициента VIF}
+    \label{fig:vif}
+\end{figure}
+
+Так как значения коэффициента VIF меньше 10, мы можем сделать вывод о том, что
+мультиколлинеарность отсутствует.
 
 \section*{Выводы}
 В ходе выполнения лабораторной работы были изучены такие типы данных в языке R,
 как список, таблица. Также были изучены методы импорта текстовых файлов с
 разделителями и Excel-файлов. Кроме того, были проанализированы зависимости между
 переменными методами корреляции и регрессии.
+
+Выяснилось, что количество смертей сильно коррелирует с количеством заражений,
+количество заражений умеренно коррелирует с количество тестов, индекс здравоохранения
+умеренно коррелирует с количеством смертей и количеством тестов.
+
+Количество смертей сильно зависит от индекса здравоохранения.
 
 \end{document}
