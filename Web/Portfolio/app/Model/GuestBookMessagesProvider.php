@@ -46,11 +46,12 @@ class GuestBookMessagesProvider implements IGuestBookMessagesProvider {
         return new GuestBookEntry($entryProperties[0], $entryProperties[1], $entryProperties[2], DateTime::createFromFormat("d.m.Y", $entryProperties[3]));
     }
 
-    public function importGuestBook() {
-        // TODO: Implement importGuestBook() method.
+    public function importGuestBook($tempFileName) {
+        $newFileContent = file_get_contents($tempFileName);
+        file_put_contents($this->fileName, $newFileContent);
     }
 
-    public function verifyGuestBookContents(string $contents) {
-        return preg_match("/[A-Za-z]+ [A-Za-z]+ [A-Za-z]+,/", $contents);
+    public function verifyGuestBookContents(string $contents): bool {
+        return preg_match("/^([A-Za-z]+ [A-Za-z]+ [A-Za-z]+,[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+,.*,\d{1,2}\.\d{1,2}\.\d{4};)+$/", $contents) == 1;
     }
 }

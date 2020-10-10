@@ -6,7 +6,7 @@ interface IGuestBookMessagesProvider {
 
     public function getAllEntries();
 
-    public function importGuestBook();
+    public function importGuestBook($tempFileName);
 
     public function verifyGuestBookContents(string $contents);
 }

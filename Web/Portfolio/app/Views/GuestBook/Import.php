@@ -5,7 +5,9 @@
         <h1>Please, select a file (with .inc extension) to import guest book:</h1>
     </header>
 
-    <form action="Import.php" method="post" enctype="multipart/form-data">
+    <?php ViewHelper::writeValidationErrorsList($viewModel->errors); ?>
+
+    <form action="Import" method="post" enctype="multipart/form-data">
         <ol>
             <li>
                 <label for="file-input">Please select a valid file</label>
