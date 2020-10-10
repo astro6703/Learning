@@ -1,8 +1,8 @@
 <?php
 
-include "Views/ViewRenderer.php";
-include "Validators/ContactRequestValidator.php";
-include "ViewModels/Shared/ValidationViewModel.php";
+require_once "Views/ViewRenderer.php";
+require_once "Validators/ContactRequestValidator.php";
+require_once "ViewModels/Shared/ValidationViewModel.php";
 
 class ContactController
 {

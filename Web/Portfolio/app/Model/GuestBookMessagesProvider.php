@@ -1,7 +1,7 @@
 <?php
 
-include "GuestBookEntry.php";
-include "Model/IGuestBookMessagesProvider.php";
+require_once "GuestBookEntry.php";
+require_once "Model/IGuestBookMessagesProvider.php";
 
 class GuestBookMessagesProvider implements IGuestBookMessagesProvider {
     private string $fileName;

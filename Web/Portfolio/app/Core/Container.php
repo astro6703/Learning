@@ -1,8 +1,8 @@
 <?php
 
-include "IContainer.php";
-include "Model/Repositories/PhotosRepository.php";
-include "Model/GuestBookMessagesProvider.php";
+require_once "IContainer.php";
+require_once "Model/Repositories/PhotosRepository.php";
+require_once "Model/GuestBookMessagesProvider.php";
 
 class Container implements IContainer
 {

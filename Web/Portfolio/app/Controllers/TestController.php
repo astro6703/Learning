@@ -1,10 +1,10 @@
 <?php
 
-include "Views/ViewRenderer.php";
-include "Validators/TestRequestValidator.php";
-include "Validators/TestRequestVerification.php";
-include "ViewModels/Shared/ValidationViewModel.php";
-include "ViewModels/Test/SuccessfulTestViewModel.php";
+require_once "Views/ViewRenderer.php";
+require_once "Validators/TestRequestValidator.php";
+require_once "Validators/TestRequestVerification.php";
+require_once "ViewModels/Shared/ValidationViewModel.php";
+require_once "ViewModels/Test/SuccessfulTestViewModel.php";
 
 class TestController {
     public function __construct(IContainer $container) {}

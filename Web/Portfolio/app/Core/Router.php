@@ -1,7 +1,7 @@
 <?php
 
-include "Container.php";
-include "ResponseCodes.php";
+require_once "Container.php";
+require_once "ResponseCodes.php";
 
 class Router
 {
@@ -21,7 +21,7 @@ class Router
 
         $controllerFileName = "Controllers/" . $controllerName . 'Controller.php';
         if (file_exists($controllerFileName)) {
-            include $controllerFileName;
+            require_once $controllerFileName;
         } else {
             http_response_code(ResponseCodes::$notFoundStatusCode);
             die();

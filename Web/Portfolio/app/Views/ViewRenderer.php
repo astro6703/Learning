@@ -1,11 +1,11 @@
 <?php
 
-include "Views/Shared/ViewHelper.php";
+require_once "Views/Shared/ViewHelper.php";
 
 class ViewRenderer
 {
     static function render($viewName, $title, $viewModel = NULL, $layout = 'Layout.php')
     {
-        include "Views/Shared/".$layout;
+        require_once "Views/Shared/".$layout;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
-include "BaseRequestValidator.php";
-include "ValidationResult.php";
+require_once "BaseRequestValidator.php";
+require_once "ValidationResult.php";
 
 class TestRequestValidator extends BaseRequestValidator {
     public function __construct($post) {

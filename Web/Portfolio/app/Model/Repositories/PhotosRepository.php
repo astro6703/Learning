@@ -1,6 +1,6 @@
 <?php
 
-include "IPhotosRepository.php";
+require_once "IPhotosRepository.php";
 
 class PhotosRepository implements IPhotosRepository {
     function getAll() {

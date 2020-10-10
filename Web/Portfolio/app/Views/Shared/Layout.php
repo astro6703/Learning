@@ -26,7 +26,7 @@
         <img src="../client-side/images/portrait.jpg" class="portrait" alt="Portrait picture in on the back. Don't mind it" />
 
         <div class="main-content">
-            <?php include($viewName); ?>
+            <?php require_once($viewName); ?>
         </div>
 
         <footer class="full-width">

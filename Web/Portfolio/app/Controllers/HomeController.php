@@ -1,7 +1,7 @@
 <?php
 
-include "Views/ViewRenderer.php";
-include "ViewModels/Home/AboutViewModel.php";
+require_once "Views/ViewRenderer.php";
+require_once "ViewModels/Home/AboutViewModel.php";
 
 class HomeController
 {

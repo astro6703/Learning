@@ -1,10 +1,10 @@
 <?php
 
-include "Views/ViewRenderer.php";
-include "ViewModels/GuestBook/GuestBookViewModel.php";
-include "Validators/GuestBookRequestValidator.php";
-include "Validators/GuestBookImportValidator.php";
-include "ViewModels/Shared/ValidationViewModel.php";
+require_once "Views/ViewRenderer.php";
+require_once "ViewModels/GuestBook/GuestBookViewModel.php";
+require_once "Validators/GuestBookRequestValidator.php";
+require_once "Validators/GuestBookImportValidator.php";
+require_once "ViewModels/Shared/ValidationViewModel.php";
 
 class GuestBookController {
     private IContainer $container;
