@@ -7,7 +7,7 @@ class GuestBookMessagesProvider implements IGuestBookMessagesProvider {
     private string $fileName;
 
     public function __construct() {
-        $this->fileName = $_SERVER["DOCUMENT_ROOT"] . "/GuestBookEntries.inc";
+        $this->fileName = $_SERVER["DOCUMENT_ROOT"] . "/messages.inc";
     }
 
     public function saveEntry(GuestBookEntry $entry) {
