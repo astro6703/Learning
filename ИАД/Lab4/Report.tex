@@ -31,40 +31,41 @@
 
 \section{Ход работы}
 \subsection{Кластерный анализ}
-Выполним иерархический кластерный анализ. Загрузим данные о количестве арестов в
-США. Для этого воспользуемся известным набором данных из R, название которого
-\enquote{USArrests}.
+Выполним иерархический кластерный анализ. Загрузим данные о количестве заражений
+коронавирусом \ref{fig:data-set}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.6\linewidth]{data-set}
+    \includegraphics[width=.9\linewidth]{data-set}
     \caption{Загруженные данные}
     \label{fig:data-set}
 \end{figure}
 
 \begin{itemize}
-    \item murder - количество задержаний за убийство;
-    \item assault - количество задержаний за нападение;
-    \item rape - количество задержаний за изнасилование;
-    \item upban pop - процент городского населения.
+    \item total\_cases\_by\_1m - количество заражений на 1 миллион населения;
+    \item total\_death\_by\_1m - количество смертей на 1 миллион населения;
+    \item tests\_by\_1m - количество тестов на 1 миллион населения;
+    \item health\_index - индекс развитости системы здравоохранения;
+    \item stringency\_index - индекс реакции властей на пандемию.
 \end{itemize}
 
 Функция кластерного анализа в R:
 
 \code{kmeans(x, centers, iter.шах=10, nstart=1,\\algorithm=c("Hartigan-Wong", "Lloyd", "Forgy", "MacQueen"))}
 
-Выполним разбиение на два кластера по переменным \enquote{Количество убийств} и
-\enquote{Количество нападений}. Результат разбиения изображен на рисунке
+Выполним разбиение на два кластера по переменным \enquote{Индекс развитости системы здравоохранения} и
+\enquote{Индекс реакции властей на пандемию}. Результат разбиения изображен на рисунке
 \ref{fig:2-clusters-graph}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.5\linewidth]{2-clusters-graph}
+    \includegraphics[width=.65\linewidth]{2-clusters-graph}
     \caption{Разбиение данных на 2 кластера}
     \label{fig:2-clusters-graph}
 \end{figure}
+\pagebreak
 
-Результаты разбиение представлены на рисунке \ref{fig:2-clusters-R}.
+Результаты разбиения представлены на рисунке \ref{fig:2-clusters-R}.
 
 \begin{figure}[H]
     \centering
@@ -74,14 +75,14 @@
 \end{figure}
 
 \begin{itemize}
-    \item первый кластер содержит 29 элементов, второй – 21;
-    \item сумма квадратов расстояний внутри кластера: 1 – 47963, 2 – 35741;
-    \item общая сумма квадратов расстояний внутри кластеров: 83705;
-    \item сумма квадратов расстояний между кластерами – 257537.
+    \item первый кластер содержит 32 элемента, второй – 4;
+    \item сумма квадратов расстояний внутри кластера: 1 – 2487.778, 2 – 1022.395;
+    \item общая сумма квадратов расстояний внутри кластеров: 3510.174;
+    \item сумма квадратов расстояний между кластерами – 5394.984.
 \end{itemize}
 
 Для выбора лучшей группировки в смысле критерия минимума отношений средних
-внутри кластерных и меж кластерных расстояний было проведено деление на 3 – 10
+внутри кластерных и меж кластерных расстояний было проведено деление на 2 – 10
 кластеров и заполнена таблица в MS Excel.
 
 \begin{figure}[H]
@@ -118,11 +119,10 @@
 Результатом анализа является количество элементов в каждом из кластеров:
 
 \begin{lstlisting}
-Rcmdr>  summary(as.factor(cutree(HClust.1, k = 3))) # Cluster Sizes
-1  2  3 
-16 14 20 
+Rcmdr>  summary(as.factor(cutree(HClust.3, k = 3))) # Cluster Sizes
+1  2  3
+20 12  4
 \end{lstlisting}
-\pagebreak
 
 Был проведен иерархический анализ методом простой связи:
 
@@ -136,9 +136,9 @@ Rcmdr>  summary(as.factor(cutree(HClust.1, k = 3))) # Cluster Sizes
 Результатом анализа является количество элементов в каждом из кластеров:
 
 \begin{lstlisting}
-Rcmdr>  summary(as.factor(cutree(HClust.2, k = 3))) # Cluster Sizes
-1  2  3 
-14 34  2 
+Rcmdr>  summary(as.factor(cutree(sl, k = 3))) # Cluster Sizes
+1  2  3
+32  3  1
 \end{lstlisting}
 
 \section*{Выводы}
