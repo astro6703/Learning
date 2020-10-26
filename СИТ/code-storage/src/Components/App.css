@@ -1,0 +1,53 @@
+#root {
+  margin: 0 auto 0 auto;
+}
+
+.title {
+  flex-grow: 1;
+}
+
+nav {
+  display: flex;
+  justify-content: space-evenly;
+  flex-grow: 3;
+}
+
+.login {
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 5;
+}
+
+.nav-link a {
+  color: white;
+  text-decoration: none;
+}
+
+.menuButton {
+  margin-right: 15px;
+}
+
+.nav-link .active {
+  text-decoration: underline;
+}
+
+.list {
+  width: 300px;
+}
+
+.drawer-link {
+  color: rgba(0, 0, 0, 0.87);
+  text-decoration: none;
+}
+
+@media screen and (min-width: 600px) {
+  #menu-opener {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  #navbar-main {
+    display: none;
+  }
+}
