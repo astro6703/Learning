@@ -1,10 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, NavLink, Switch, Route } from 'react-router-dom';
 import { List, ListItem, ListItemText, AppBar, Toolbar, IconButton, Typography, Button, Drawer, Link } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import './App.css';
 import './Nav.css';
+import { Login } from './Login';
+import { Home } from './Home';
 
 interface IAppState {
   readonly isDrawerOpened: boolean;
@@ -92,6 +94,19 @@ export class App extends React.Component<any, IAppState> {
             </List>
           </div>
         </Drawer>
+
+        <div className="main-content-wrapper">
+          <Router>
+            <Switch>
+              <Route path="/login">
+                <Login />
+              </Route>
+              <Route path='/'>
+                <Home />
+              </Route>
+            </Switch>
+          </Router>
+        </div>
       </div>
     )
   }
