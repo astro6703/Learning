@@ -1,0 +1,9 @@
+.form-container form {
+    width: 500px;
+}
+
+@media screen and (max-width: 599) {
+    .form-container form {
+        width: 100%;
+    }
+}

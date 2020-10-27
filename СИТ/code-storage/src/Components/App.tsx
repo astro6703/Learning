@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, NavLink, Switch, Route } from 'react-router-dom';
+import { NavLink, Switch, Route, withRouter } from 'react-router-dom';
 import { List, ListItem, ListItemText, AppBar, Toolbar, IconButton, Typography, Button, Drawer, Link } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
@@ -7,6 +7,8 @@ import './App.css';
 import './Nav.css';
 import { Login } from './Login';
 import { Home } from './Home';
+import { Authors } from './Authors';
+import { Snippets } from './Snippets';
 
 interface IAppState {
   readonly isDrawerOpened: boolean;
@@ -17,7 +19,7 @@ interface INavLinkDescriptor {
   title: string;
 }
 
-export class App extends React.Component<any, IAppState> {
+class App extends React.Component<any, IAppState> {
   public readonly state: IAppState;
   private readonly navLinks: INavLinkDescriptor[];
 
@@ -28,9 +30,8 @@ export class App extends React.Component<any, IAppState> {
     };
 
     this.navLinks = [
-      { url: '/', title: 'Home'},
-      { url: '/about', title: 'About'},
-      { url: '/elsewhere', title: 'Elsewhere' }
+      { url: '/home', title: 'Home'},
+      { url: '/authors', title: 'Authors'}
     ]
   }
 
@@ -57,13 +58,11 @@ export class App extends React.Component<any, IAppState> {
             </Typography>
 
             <nav id="navbar-main">
-              <Router>
-                {this.navLinks.map((link, index) => (
-                  <Typography key={index} variant="h6" className="nav-link">
-                    <NavLink to={link.url}>{link.title}</NavLink>
-                  </Typography>
-                ))}
-              </Router>
+              {this.navLinks.map((link, index) => (
+                <Typography key={index} variant="h6" className="nav-link">
+                  <NavLink to={link.url}>{link.title}</NavLink>
+                </Typography>
+              ))}
             </nav>
 
             <Typography className="login">
@@ -82,32 +81,30 @@ export class App extends React.Component<any, IAppState> {
             onKeyDown={(e) => this.toggleDrawer(false, e)}
           >
             <List>
-              <Router>
-                {this.navLinks.map((link, index) => (
-                  <ListItem button key={index}>
-                    <ListItemText>
-                      <NavLink to={link.url} className="drawer-link">{link.title}</NavLink>
-                    </ListItemText>
-                  </ListItem>
-                ))}
-              </Router>
+              {this.navLinks.map((link, index) => (
+                <ListItem button key={index}>
+                  <ListItemText>
+                    <NavLink to={link.url} className="drawer-link">{link.title}</NavLink>
+                  </ListItemText>
+                </ListItem>
+              ))}
             </List>
           </div>
         </Drawer>
 
         <div className="main-content-wrapper">
-          <Router>
-            <Switch>
-              <Route path="/login">
-                <Login />
-              </Route>
-              <Route path='/'>
-                <Home />
-              </Route>
-            </Switch>
-          </Router>
+          <Switch>
+            <Route path="/login" component={Login} />
+            <Route path='/home' component={Home} />
+            <Route path="/authors/:id" component={Authors} />
+            <Route path="/authors" component={Authors} />
+            <Route path="/snippets/:id" component={Snippets} />
+            <Route path='/' component={Home} />
+          </Switch>
         </div>
       </div>
     )
   }
 }
+
+export default withRouter(App)

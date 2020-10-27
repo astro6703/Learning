@@ -101,43 +101,14 @@ export class Login extends React.Component {
   render() {
     return (
       <div>
-        <AppBar position="static">
-          <Tabs value={this.state.value} onChange={this.handleTabChange}>
-            <Tab label="Sign in" id={`tab-${0}`} />
-            <Tab label="Sign up" id={`tab-${1}`} />
-          </Tabs>
-        </AppBar>
-        <TabPanel currentTabIndex={this.state.value} index={0}>
-          <div className="form-container">
-            <form action="dummy" method="POST">
-              <p>Please, input your username and password.</p>
-              <div>
-                <TextField label="Username" fullWidth onChange={this.handleUsernameChange}></TextField>
-              </div>
-              <div>
-                <TextField label="Password" fullWidth type="password" onChange={this.handlePasswordChange}></TextField>
-              </div>
-              <Button variant="contained" color="primary" type="submit">Submit</Button>
-            </form>
-          </div>
-        </TabPanel>
-        <TabPanel currentTabIndex={this.state.value} index={1}>
-          <div className="form-container">
-            <form action="dummy" method="POST">
-              <p>Please, input your username and password.</p>
-              <div>
-                <TextField label="Username" fullWidth onChange={this.handleUsernameChange}></TextField>
-              </div>
-              <div>
-                <TextField label="Password" fullWidth type="password" onChange={this.handlePasswordChange}></TextField>
-              </div>
-              <div>
-                <TextField label="Password" fullWidth type="password" onChange={this.handlePasswordChange}></TextField>
-              </div>
-              <Button variant="contained" color="primary" type="submit">Submit</Button>
-            </form>
-          </div>
-        </TabPanel>
+        <div className="form-container">
+          <form action="dummy" method="POST">
+            <p>Please, input your username and password.</p>
+            <TextField label="Username" fullWidth onChange={this.handleUsernameChange}></TextField>
+            <TextField label="Password" fullWidth type="password" onChange={this.handlePasswordChange}></TextField>
+            <Button variant="contained" color="primary" type="submit">Submit</Button>
+          </form>
+        </div>
       </div>
     );
   }

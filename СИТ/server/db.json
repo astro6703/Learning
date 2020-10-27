@@ -1,0 +1,162 @@
+{
+  "authors": [
+    {
+      "id": 1,
+      "username": "SomeDude",
+      "snippets": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "username": "Another",
+      "snippets": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "username": "I was there!",
+      "snippets": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": 4,
+      "username": "asdwa nlad",
+      "snippets": [
+        10,
+        11,
+        12
+      ]
+    }
+  ],
+  "snippets": [
+    {
+      "id": 1,
+      "owner": {
+        "id": 1,
+        "name": "SomeDude"
+      },
+      "title": "First!",
+      "code": "console.log(Hello, World!);",
+      "language": "JS"
+    },
+    {
+      "id": 2,
+      "owner": {
+        "id": 1,
+        "name": "SomeDude"
+      },
+      "title": "Another cool solution yet again!",
+      "code": "snippets.slice(0, 30)",
+      "language": "JS"
+    },
+    {
+      "id": 3,
+      "owner": {
+        "id": 1,
+        "name": "SomeDude"
+      },
+      "title": "Another cool solution yet again!",
+      "code": "snippets.slice(0, 30)",
+      "language": "JS"
+    },
+    {
+      "id": 4,
+      "owner": {
+        "id": 2,
+        "name": "Another"
+      },
+      "title": "Another cool solution yet again!",
+      "code": "snippets.slice(0, 30)",
+      "language": "JS"
+    },
+    {
+      "id": 5,
+      "owner": {
+        "id": 2,
+        "name": "Another"
+      },
+      "title": "Another cool solution yet again!",
+      "code": "snippets.slice(0, 30); Another cool solution yet again!; Another cool solution yet again!; Another cool solution yet again!;Another cool solution yet again!",
+      "language": "JS"
+    },
+    {
+      "id": 6,
+      "owner": {
+        "id": 2,
+        "name": "Another"
+      },
+      "title": "Another cool solution yet again!",
+      "code": "snippets.slice(0, 30)",
+      "language": "JS"
+    },
+    {
+      "id": 7,
+      "owner": {
+        "id": 3,
+        "name": "I was there!"
+      },
+      "title": "Another cool solution yet again!",
+      "code": "snippets.slice(0, 30)",
+      "language": "JS"
+    },
+    {
+      "id": 8,
+      "owner": {
+        "id": 3,
+        "name": "I was there!"
+      },
+      "title": "Another cool solution yet again!",
+      "code": "snippets.slice(0, 30)",
+      "language": "JS"
+    },
+    {
+      "id": 9,
+      "owner": {
+        "id": 3,
+        "name": "I was there!"
+      },
+      "title": "Another cool solution yet again!",
+      "code": "snippets.slice(0, 30)",
+      "language": "JS"
+    },
+    {
+      "id": 10,
+      "owner": {
+        "id": 4,
+        "name": "asdwa nlad"
+      },
+      "title": "Another cool solution yet again!",
+      "code": "snippets.slice(0, 30)",
+      "language": "JS"
+    },
+    {
+      "id": 11,
+      "owner": {
+        "id": 4,
+        "name": "asdwa nlad"
+      },
+      "title": "Anotherasa wgasd knawln adl",
+      "code": "snippets.slice(0, 30)",
+      "language": "JS"
+    },
+    {
+      "id": 12,
+      "owner": {
+        "id": 4,
+        "name": "asdwa nlad"
+      },
+      "title": "Another cool solution yet again!",
+      "code": "snippets.slice(0, 30)",
+      "language": "JS"
+    }
+  ]
+}

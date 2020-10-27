@@ -1,9 +1,8 @@
 .form-container {
   display: flex;
   justify-content: center;
+  align-items: center; 
 }
-
-
 
 .form-container button {
   float: right;
