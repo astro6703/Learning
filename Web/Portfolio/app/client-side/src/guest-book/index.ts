@@ -1,8 +1,9 @@
-import './index.scss';
 import * as $ from "jquery";
 import { visitPage } from "../shared/components/storage/storage";
 import { updateClockOnInterval } from "../shared/components/clock/clock";
 import { FieldFilledValidator, FormComponent, NameValidator, setFieldsForValidation } from "../shared/components/forms/forms";
+
+import '../shared/layout/blog.scss';
 
 $(() => {
     visitPage('guest-book');

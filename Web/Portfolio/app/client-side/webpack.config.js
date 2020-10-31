@@ -15,8 +15,9 @@ module.exports = {
         "contact/success": "./src/contact/success.ts",
         "test/index": "./src/test/index.ts",
         "test/success": "./src/test/success.ts",
+        "test/answers": "./src/test/answers.ts",
         "guest-book/index": "./src/guest-book/index.ts",
-        "guest-book/import": "./src/guest-book/import.ts"
+        "guest-book/import": "./src/guest-book/import.ts",
     },
     module: {
         rules: [

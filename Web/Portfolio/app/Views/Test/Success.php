@@ -8,4 +8,6 @@
     ?>
 </h1>
 
+<a href="/Test/Index">Back</a>
+
 <script src="../client-side/bundles/test/success.bundle.js"></script>

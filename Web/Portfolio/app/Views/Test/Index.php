@@ -7,6 +7,8 @@
 
     <p>All fields are required! Hover over fields to see the additional requirements.</p>
 
+    <a href="/Test/Answers">Check submitted answers</a>
+
     <?php ViewHelper::writeValidationErrorsList($viewModel->errors); ?>
 
     <form action="Test" method="POST">

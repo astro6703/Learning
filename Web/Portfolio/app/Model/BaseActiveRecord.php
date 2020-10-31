@@ -1,61 +1,118 @@
 <?php
 
+require_once "PortfolioPdo.php";
 
 abstract class BaseActiveRecord {
-    protected int $id;
-    protected array $queryData;
-    protected string $updateClause;
-    protected string $insertClause;
+    protected static $pdo;
+    private static $tablename;
+    private static $className;
+    private static $dbfields = array();
 
-    protected string $tableName;
-    protected string $className;
-    protected PDO $pdo;
+    protected $id;
 
     public function __construct() {
-        $dsn = "sqlsrv:Server=localhost;Database=Portfolio";
-        try {
-            $this->pdo = new PDO($dsn,
-                                 null,
-                                 null,
-                                 [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        static::setupConnection();
+    }
+
+    private static function setupConnection() {
+        static::$pdo = PortfolioPdo::getInstance();
+    }
+
+    public static function find($id) {
+        static::setupConnection();
+
+        $sql = "SELECT * FROM " . static::$tablename . " WHERE id=$id";
+        $stmt = static::$pdo->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_CLASS, static::$className);
+        $stmt->execute();
+        $result = $stmt->fetch();
+
+        if (!$result) {
+            throw new Exception("Entity " . static::$className . " was not found.");
         }
-        catch (Exception $e) {
-            echo $e->getMessage();
+
+        return $result;
+    }
+
+    public static function findAll() {
+        static::setupConnection();
+
+        $sql = "SELECT * FROM " . static::$tablename;
+        $stmt = static::$pdo->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_CLASS, static::$className);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_CLASS, static::$className);
+    }
+
+    public static function findByPage($offset, $rowsPerPage) {
+        static::setupConnection();
+
+        $result = [];
+        $sql = "SELECT * FROM ".static::$tablename." ORDER BY date DESC LIMIT ".$offset.", ".$rowsPerPage;
+        $stmt = static::$pdo->query($sql);
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            array_push($result, $row);
         }
+
+        return $result;
     }
 
-    public function getId() {
-        return $this->id;
+    public static function getCount() {
+        static::setupConnection();
+
+        $sql = "SELECT COUNT(*) FROM " . static::$tablename;
+        $stmt = static::$pdo->query($sql);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return current($result);
     }
 
-    public function getById(int $id) {
-        $stmt = $this->pdo->prepare("select top(1) from $this->tableName where deletedAt is null and id = :id");
-        $stmt->execute(["id" => $id]);
+    private static function getFieldTypes() {
+        $stmt = static::$pdo->query("SHOW FIELDS FROM " . static::$tablename);
+        $fieldTypesTableRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $stmt->fetchAll(PDO::FETCH_CLASS, $this->className)[0];
+        $fieldNameToType = array();
+        foreach ($fieldTypesTableRows as $row) {
+            $fieldNameToType[$row["Field"]] = $row["Type"];
+        }
+
+        return $fieldNameToType;
     }
 
-    public function getAll() {
-        return $this->pdo->query("select * from $this->tableName where deletedAt is null")
-                         ->fetchAll(PDO::FETCH_CLASS, $this->className);
+    private function wrapWithQuotesIfNeeded($fieldValue, $fieldType) {
+        if (substr($fieldType, 0, 7) == "varchar" || substr($fieldType, 0, 8) == "datetime") {
+            return "'" . $fieldValue . "'";
+        }
+        return $fieldValue;
     }
 
-    public abstract function save(): int;
-//    {
-//        $entity = $this->getById($this->id);
-//
-//        if ($entity) {
-//            $this->pdo->prepare($this->updateClause)
-//                      ->execute($this->queryData);
-//        } else {
-//            $this->pdo->prepare($this->insertClause)
-//                      ->execute($this->queryData);
-//        }
-//    }
+    public function save() {
+        $data = array();
+        $fieldTypes = static::getFieldTypes();
 
-    public function delete(int $id) {
-        $stmt = $this->pdo->prepare("delete from $this->tableName where deletedAt is null and id = :id");
+        foreach (static::$dbfields as $fieldName) {
+            $data[$fieldName] = $this->wrapWithQuotesIfNeeded($this->{$fieldName}, $fieldTypes[$fieldName]);
+        }
 
-        return $stmt->execute(["id" => $id]);
+        return $this->saveInternal($data);
+    }
+
+    private function saveInternal($data) {
+        $values = implode(",", $data);
+        $fields = implode(",", static::$dbfields);
+
+        $stmt = static::$pdo->prepare("INSERT INTO " . static::$tablename .  " ($fields) VALUES ($values)");
+        $stmt->execute();
+
+        return static::$pdo->lastInsertId();
+    }
+
+    public function delete() {
+        $sql = "DELETE FROM " . static::$tablename . " WHERE id = " .$this->id;
+        $stmt = static::$pdo->query($sql);
+
+        $stmt->execute();
     }
 }
