@@ -7,8 +7,12 @@ require_once "ViewModels/Shared/ValidationViewModel.php";
 require_once "ViewModels/Test/SuccessfulTestViewModel.php";
 require_once "ViewModels/Test/AnswersViewModel.php";
 require_once "Model/Answer.php";
+require_once "ViewModels/Shared/PaginationViewModel.php";
+require_once "Model/PaginationHelper.php";
 
 class TestController {
+    private $pageSize = 10;
+
     public function __construct(IContainer $container) { }
 
     public function index() {
@@ -17,8 +21,17 @@ class TestController {
     }
 
     public function answers() {
-        $answers = Answer::findAll();
-        $viewModel = new AnswersViewModel($answers);
+        $page = isset($_GET['page'])
+            ? $_GET['page']
+            : 1;
+
+        $offset = PaginationHelper::getOffset($page, $this->pageSize);
+        $answers = Answer::findByPage($offset, $this->pageSize);
+
+        $totalPages = PaginationHelper::getTotalPages(Answer::getCount(), $this->pageSize);
+        $paginationViewModel = new PaginationViewModel($page, $totalPages, "/Test/Answers");
+        $viewModel = new AnswersViewModel($answers, $paginationViewModel);
+
         ViewRenderer::render("Views/Test/Answers.php", "Answers", $viewModel);
     }
 

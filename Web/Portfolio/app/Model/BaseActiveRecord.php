@@ -42,21 +42,18 @@ abstract class BaseActiveRecord {
         $stmt->setFetchMode(PDO::FETCH_CLASS, static::$className);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_CLASS, static::$className);
+        return $stmt->fetchAll();
     }
 
     public static function findByPage($offset, $rowsPerPage) {
         static::setupConnection();
 
-        $result = [];
-        $sql = "SELECT * FROM ".static::$tablename." ORDER BY date DESC LIMIT ".$offset.", ".$rowsPerPage;
-        $stmt = static::$pdo->query($sql);
+        $sql = "SELECT * FROM " . static::$tablename . " ORDER BY createdAt DESC LIMIT " . "$offset , $rowsPerPage";
+        $stmt = static::$pdo->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_CLASS, static::$className);
+        $stmt->execute();
 
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            array_push($result, $row);
-        }
-
-        return $result;
+        return $stmt->fetchAll();
     }
 
     public static function getCount() {
