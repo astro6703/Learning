@@ -41,7 +41,7 @@ class TestController {
 
         if ($validationResult->isValid) {
             $answer = new Answer();
-            $answer->postedAt = date("Y-m-d H:i:s");
+            $answer->createdAt = date("Y-m-d H:i:s");
             $answer->studentFullName = $_POST["Name"];
             $answer->email = $_POST["Email"];
             $answer->question1Answer = $_POST["Question1"];
