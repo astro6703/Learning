@@ -18,6 +18,8 @@ module.exports = {
         "test/answers": "./src/test/answers.ts",
         "guest-book/index": "./src/guest-book/index.ts",
         "guest-book/import": "./src/guest-book/import.ts",
+        "blog/index": "./src/blog/index.ts",
+        "blog/post": "./src/blog/post.ts"
     },
     module: {
         rules: [

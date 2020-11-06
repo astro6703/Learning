@@ -1,6 +1,7 @@
 {
     "require": {
         "vlucas/valitron": "^1.4",
-      "ext-pdo": "*"
+      "ext-pdo": "*",
+      "ext-exif": "*"
     }
 }

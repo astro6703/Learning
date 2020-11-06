@@ -9,3 +9,12 @@ create table portfolio.answers (
     studentFullName varchar(200) not null,
     email varchar(200) not null
 )
+
+create table blog (
+    id int not null primary key auto_increment,
+    createdAt datetime not null,
+    subject varchar(200) not null,
+    message varchar(1000) not null,
+    photoName varchar(200) not null,
+    name varchar(200) not null
+)

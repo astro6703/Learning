@@ -18,6 +18,10 @@
             @extend %vertical-margin;
 
             padding: 5px;
+
+            .comment-picture {
+                max-width: 100%
+            }
         }
 
         %vertical-margin {
