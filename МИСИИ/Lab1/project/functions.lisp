@@ -1,0 +1,28 @@
+(defun f1 (x y z)
+  (let ((items (cons x (cons y (cons z nil)))))
+    (if (some #'listp items)
+      (cdr items)
+      (cons
+        (car (cdr items))
+        (cons
+          (car items)
+          (cdr (cdr items))
+        )
+      )
+    )
+  )
+)
+
+(defun f2 (x y z)
+  (let ((items (list x y z)))
+    (if (some #'listp items)
+      (rest items)
+      (list (second items) (first items) (third items))
+    )
+  )
+)
+
+(print (f1 1 2 (list 1 2 3)))
+(print (f1 1 2 3))
+(print (f2 1 2 (list 1 2 3)))
+(print (f2 1 2 3))
