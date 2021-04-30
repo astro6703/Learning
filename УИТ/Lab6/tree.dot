@@ -1,0 +1,16 @@
+digraph {
+    node[shape="rectangle"]
+
+    HEAD[label="",shape="circle"]
+    AResult[label="0"]
+    BResult[label="1.652.000"]
+    CResult[label="1.977.000"]
+
+    HEAD -> A[label="Не разрабатываем\nпродукт"]
+    HEAD -> B[label="Разрабатываем\nза 400.000"]
+    HEAD -> C[label="Разрабатываем\nза 1.200.000"]
+
+    A -> AResult
+    B -> BResult
+    C -> CResult
+}
