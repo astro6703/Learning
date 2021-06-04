@@ -1,0 +1,905 @@
+\documentclass[a4paper,14pt]{extarticle}
+\usepackage{../../tex-shared/no-title-layout}
+
+\addto\captionsrussian{
+  \renewcommand{\contentsname}
+    {СОДЕРЖАНИЕ}
+}
+
+\begin{document}
+\section{ИНДИВИДУАЛЬНОЕ ЗАДАНИЕ НА ПРАКТИКУ}
+\begin{table}[H]
+    \caption{Индивидуальное задание}
+    \begin{tabular}{ | p{5.5cm} | p{11cm} | }
+        \hline
+        Фреймворк ASP.NET 5 & https://docs.microsoft.com/en-us/aspnet/core/ \\ \hline
+        ORM Entity Framework Core 5 & https://docs.microsoft.com/en-us/ef/core/ \\ \hline
+        Облачная хостинговая платформа Azure Web Service & https://docs.microsoft.com/en-us/azure/app-service/ \\ \hline
+        СУБД SQL SERVER 2019 и SQL диалект T-SQL & https://docs.microsoft.com/en-us/sql/sql-server/, https://docs.microsoft.com/en-us/sql/t-sql/ \\ \hline
+        Фреймворк KnockoutJS & knockoutjs.com/documentation \\ \hline
+    \end{tabular}
+\end{table}
+\pagebreak
+
+\section{ВВЕДЕНИЕ}
+Производственная практика (НИР) пройдена в ООО \enquote{МОРЧЕКА ТЕХНОЛОДЖИ}. Предметом
+исследования являются способы создания WEB-приложений на платформе \code{.NET}.
+
+Целью прохождения практики являются получение навыков промышленного создания
+WEB-приложений с использованием актуальных библиотек и фреймворков, таких как:
+\code{ASP.NET Core MVC}, \code{EF Core 5}, \code{Azure Web Service}, \code{KnockoutJs},
+СУБД \code{SQL SERVER}; получение навыков поддержки и расширения существующих
+WEB-приложений (в том числе и устаревших); исследование устройства современных
+веб-приложений, в том числе клиентских одностраничных приложений (SPA).
+\pagebreak
+
+\tableofcontents
+\pagebreak
+
+\section{СОДЕРЖАНИЕ}
+\subsection{СЕРВЕРНОЕ ПРИЛОЖЕНИЕ НА ASP.NET CORE}
+\subsubsection{Создание проекта и предназначение его классов}
+
+Создадим проект ASP.NET Core с использованием пустого шаблона:
+
+\begin{lstlisting}
+md Practice
+cd .\Practice
+dotnet new sln --name PracticeTestApp
+md PracticeTestApp
+cd .\PracticeTestApp\
+dotnet new web
+cd ..
+dotnet sln add .\PracticeTestApp\PracticeTestApp.csproj
+\end{lstlisting}
+
+Получим базовую структуру приложения, которое уже можно запустить (рисунок \ref{fig:project-structure}):
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{project-structure}
+    \caption{Структура проекта}
+    \label{fig:project-structure}
+\end{figure}
+
+На рисунке \ref{fig:project-structure} видно, что, помимо файлов непосредственно
+проекта, проект содержит классы \code{Startup.cs} и \code{Program.cs}. Разберем
+содержимое и предназначение этих файлов:
+
+Содержимое \code{Program.cs} после создания пустого проекта:
+
+\begin{lstlisting}
+public class Program {
+    public static void Main(string[] args) {
+        CreateHostBuilder(args).Build().Run();
+    }
+
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+}
+\end{lstlisting}
+
+Все приложения .NET Core по соглашению должны иметь точку входа в виде метода
+\code{Main} класса \code{Program}. В этом месте в приложении ASP.NET Core
+создается \code{Host} - абстракция для инкапсуляции всех ресурсов приложения:
+
+\begin{itemize}
+    \item реализация HTTP сервера;
+    \item конфигурация сервера;
+    \item компоненты конвейера;
+    \item сервисы инверсии зависимостей (DI);
+    \item логирование.
+\end{itemize}
+
+Есть два вида хостов: \code{.NET Generic Host}, \code{ASP.NET Core Web Host}.
+
+Рекомендуется использовать \code{.NET Generic Host}, \code{ASP.NET Core Web
+Host} нужет для обратной совместимости с прошлыми версиями ASP.NET Core.
+
+Создание хоста происходит с вызовом метода \code{CreateDefaultBuilder}, который
+устанавливает для хоста набор значений по умолчанию:
+
+\begin{itemize}
+    \item использование \code{Kestrel} в качестве веб сервера;
+    \item использование \code{appsettings.json} и
+          \code{appsettings.\\{EnvironmentName}.json}
+          в качестве проводников конфигурации;
+    \item перенаправление вывода логирования в консоль и инструменты отладки.
+\end{itemize}
+
+Кроме того, при создании хоста указывается, какой класс использовать в качестве
+\code{Startup}.
+
+Содержимое класса \code{Startup.cs} после создание проекта:
+
+\begin{lstlisting}
+public class Startup {
+    public void ConfigureServices(IServiceCollection services) { }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+        if (env.IsDevelopment()) {
+            app.UseDeveloperExceptionPage();
+        }
+
+        app.UseRouting();
+        app.UseEndpoints(endpoints => {
+            endpoints.MapGet("/", async context => {
+                await context.Response.WriteAsync("Hello World!");
+            });
+        });
+    }
+}
+\end{lstlisting}
+
+\code{Startup.cs} - класс, в котором:
+
+\begin{itemize}
+    \item настраиваются сервисы, используемые приложением (метод\\
+          \code{ConfigureServices});
+    \item настраивается конвейер обработки HTTP запросов как список
+          промежуточных компонентов middleware (метод Configure).
+\end{itemize}
+
+В базовом варианте класс просто задает ответ на все GET-запросы как строку
+\enquote{Hello World!}.
+
+\subsubsection{Настройка сервера под MVC архитектуру}
+
+Изначально ASP.NET Core проектировался под архитектуру MVC, поэтому настройка
+включит в себя только включение MVC и настройка роутинга на контроллеры
+MVC. Делается это следующим образом:
+
+\begin{lstlisting}
+public void ConfigureServices(IServiceCollection services) {
+    services.AddMvc();
+}
+...
+app.UseEndpoints(endpoints => {
+    endpoints.MapControllerRoute(name: "default",
+                                 pattern: "{controller=Home}/{action=Index}/{id?}");
+});
+\end{lstlisting}
+
+Теперь запросы будут мэппиться на экшены и контроллеры с соответствующими
+именами. Для обработки запросов нужно создать контроллер и экшен. Экшен -- любой
+публичный метод контроллера, обычно возвращающий IActionResult. Url для
+контроллера можно задать атрибутом.
+
+\begin{lstlisting}
+[Route("home")] 
+public class HomeController : Controller {
+    public IActionResult Index() => Ok();
+}
+\end{lstlisting}
+
+Но лучше соблюдать соглашения по расположению контроллеров. В этом случае,
+достаточно разместить контроллер в папке \code{Controllers}:
+
+\begin{lstlisting}
+namespace PracticeTestApp.Controllers { 
+    public class HomeController : Controller {
+        public IActionResult Index() => Ok();
+    }
+}
+\end{lstlisting}
+
+В обоих случаях запрос /Home/Index обработается экшеном \code{Index} класса
+\code{HomeController}.
+
+Для того, чтобы вернуть HTML (в терминах MVC - View), нужно из экшена вернуть
+\code{ViewResult}:
+
+\code{public IActionResult Index() => View();}
+
+Для view можно задавать имя, но, как и в случае с контроллерами, можно его
+создать в папке Views в папке с именем соответствующего контроллера с именем
+соответствующего экшена. View представляет из себя \code{.cshtml} документ,
+использующий синтаксис \code{Razor}. \code{Razor} позволяет прокидывать из
+контроллера во view необходимые данные и использовать их во view с помощью
+синтаксиса C\#.
+
+Создадим view, соответствующую экшену \code{Index}:
+
+\begin{lstlisting}
+//HomeController.cs:
+public class HomeController : Controller {
+    public IActionResult Index() {
+        return View(new IndexViewModel("Hello, World!"));
+    }
+}
+
+//IndexViewModel.cs:
+public class IndexViewModel {
+    public IndexViewModel(string message) {
+        Message = message;
+    }
+    public string Message { get; }
+}
+
+//Views\Home\Index.cshtml:
+@model PracticeTestApp.ViewModels.Home.IndexViewModel
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+        <h1>@Model.Message</h1>
+    </body>
+</html>
+\end{lstlisting}
+
+При запуске приложени получим следующее (рисунок \ref{fig:view-testing}):
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{view-testing}
+    \caption{Веб-страница, возвращенная сервером}
+    \label{fig:view-testing}
+\end{figure}
+
+Для того, чтобы получить параметры из query string при GET запросе, достаточно
+указать имена соответствующих параметров в экшене:
+
+\code{public IActionResult Index(int id, string message)}
+
+Для обработки запросов, отличных от GET, достаточно задать атрибут
+соответствующего запроса на экшене:
+
+\begin{lstlisting}
+public class HomeController : Controller {
+    public IActionResult Index(int id, string message) {
+        return View(new IndexViewModel("Hello, World!"));
+    }
+
+    [HttpPost]
+    public IActionResult PostAction() => Ok();
+
+    [HttpPut]
+    public IActionResult PutAction() => Ok();
+
+    [HttpDelete]
+    public IActionResult DeleteAction() => Ok();
+}
+\end{lstlisting}
+
+\subsubsection{Создание API-контроллеров}
+
+API-контроллеры помечаются атрибутом \code{[ApiController]}. Желательно\\указывать
+отдельный путь для API запросов. Пример:
+
+\begin{lstlisting}
+//DataController.cs
+[ApiController]
+[Route("api/[controller]")]
+public class DataController : ControllerBase {
+    [HttpGet]
+    public ActionResult<string[]> Get() {
+        var strings = new[] {
+            "1", "2", "3", "4", "5"
+        };
+        return strings;
+    }
+
+    [HttpPost]
+    public ActionResult<Product[]> Post() {
+        var products = new[] {
+            new Product(1, name: "First", type: "Utilities"),
+            new Product(2, name: "Second", type: "Sports"),
+            new Product(3, "Third", "Other")
+        };
+        return products;
+    }
+}
+
+//Product.cs
+public class Product {
+    public Product(long id, string name, string type) {
+        Id = id;
+        Name = name;
+        Type = type;
+    }
+
+    public long Id { get; }
+
+    public string Name { get; }
+
+    public string Type { get; }
+}
+\end{lstlisting}
+
+Теперь, для того, чтобы обратиться к API-контроллеру, достаточно послать GET или
+POST запросы на адрес \textbackslash api \textbackslash data (рисунки
+\ref{fig:api-get} и \ref{fig:api-post}). Для отправки запросов используется
+Postman.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{api-get}
+    \caption{Получение результата GET-запроса}
+    \label{fig:api-get}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{api-post}
+    \caption{Получение результата POST-запроса}
+    \label{fig:api-post}
+\end{figure}
+
+\subsubsection{Создание фильтров}
+
+Фильтры в ASP.NET Core позволяют запускать код до или после определенных этапов
+конвейера обработки запросов. Встроенные возможности аутентификации,
+авторизации, кеширования ответов ASP.NET реализованы с помощью фильтров.
+
+Очередь фильтров наступает после того, как фреймворк выбирает экшен, который
+необходимо выполнить. Существуют следующие виды фильтров:
+
+\begin{enumerate}
+    \item Фильтры авторизации. Они запускаются первыми чтобы определить,
+          авторизован ли пользователь для выполнения данного экшена. Они способны
+          прерывать выполнение конвейера в том случае, если полььзователь не
+          авторизован.
+    \item Фильтры ресурсов. Следующие по вложенности фильтры.\\
+          \code{OnResourceExecuting} выполняется перед всем остальным
+          конвейером,\\\code{OnResourceExecuted} - после.
+    \item Экшен фильтры. Выполняются непосредственно до и после вызова экшена.
+          способны изменять параметры, передаваемые в экшены и мутировать
+          результат выполнения экшена.
+    \item Фильтры исключений. Используются для создания общего подхода к обработке
+          необработанных исключений перед тем, как сформировать тело ответа.
+    \item Фильтры результатов. Используются для запуска кода непосредственно после
+          выполнения экшенов для мутирования результатов. Полезны для задания логики
+          обработки View.
+\end{enumerate}
+
+Создадим фильтр и включим его в конвейер обработки запросов:
+
+\begin{lstlisting}
+//InvalidModelStateFilter.cs
+public class InvalidModelStateFilter : IActionFilter {
+    public void OnActionExecuted(ActionExecutedContext context) { }
+
+    public void OnActionExecuting(ActionExecutingContext context) {
+        if (!context.ModelState.IsValid) {
+            context.Result = new BadRequestObjectResult(context.ModelState);
+        }
+    }
+}
+
+//Startup.cs
+services.AddMvc(options => options.Filters.Add(typeof(InvalidModelStateFilter)));
+\end{lstlisting}
+
+Флаг ModelState отвечает за успешность привязки входящих параметров к объектам.
+Приведенным выше способом можно валидировать входящие объекты, например, следующий
+экшен принимает объект:
+
+\code{public IActionResult IndexForProduct(Product product) => Ok();}
+
+Обратимся к нему следующим образом:
+
+\code{/Home/IndexForProduct?Id=15\&Name=hello\&type=sometype}
+
+Получим ответ 200.
+
+Обратимся, задав параметру Id невалидное значение:
+
+\code{/Home/IndexForProduct?Id=asd\&Name=hello\&type=sometype}
+
+Получим следующий ответ (рисунок \ref{fig:binder-error}):
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{binder-error}
+    \caption{Полученная ошибка при выполнении отправке невалидных данных}
+    \label{fig:binder-error}
+\end{figure}
+
+\subsection{КЛИЕНТСКОЕ ПРИЛОЖЕНИЕ НА KNOCKOUTJS}
+
+\subsubsection{Создание проекта приложения}
+
+\begin{lstlisting}
+cd .\PracticeTestApp\PracticeTestApp\
+md ClientApp
+npm install
+\end{lstlisting}
+
+В папке появится файл \code{package.json}, который описывает проект и его
+зависимости. Добавим в него следующую конфигурацию, включающую фреймворк
+\code{KnockoutJS} и его типизацию для языка \code{TypeScript}. Кроме того,
+добавим в проект \code{Webpack} для сборки клиентских бандлов:
+
+\begin{lstlisting}
+{
+    "name": "practicetestapp",
+    "version": "1.0.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/astro6703/Learning/Practice"
+    },
+    "description": "test app for production practicing purposes",
+    "license": "",
+    ...
+    ...
+  "devDependencies": {
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-config": "^7.5.0",
+    "@types/knockout": "^3.4.67",
+    ...
+  },
+  "dependencies": {
+    "bootstrap": "^4.5.0",
+    "knockout": "^3.5.1"
+  }
+\end{lstlisting}
+
+Для работы языка \code{TypeScript} и \code{Webpack} нужно задать конфигурации:
+
+\begin{lstlisting}
+//tsconfig.json
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "es2015",
+    "lib": ["esnext", "dom"],
+    "sourceMap": true,
+    "removeComments": true,
+    "outDir": "./tsc/",
+
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}
+//webpack.config.js
+const path = require('path');
+const miniCssExtractPlugin = require('mini-css-extract-plugin');
+
+module.exports = {
+    entry: {
+        'home/index': './src/home/index.ts'
+    },
+    module: {
+        rules: [
+            { test: /\.tsx?$/, loader: 'ts-loader', exclude: /node_modules/ },
+            { test: /\.s[ac]ss$/i, use: [ miniCssExtractPlugin.loader, 'css-loader', 'resolve-url-loader', 'sass-loader' ] },
+            { test: /\.(png|jpe?g|gif)/i, loader: 'file-loader', options: { name: '[path][name].[ext]', outputPath: 'images' } },
+        ],
+    },
+    mode: 'development',
+    devtool: 'source-map',
+    resolve: {
+        extensions: [ '.ts' ],
+    },
+    output: {
+        path: path.resolve(__dirname, 'bundles'),
+        filename: '[name].bundle.js',
+    },
+    plugins: [
+        new miniCssExtractPlugin({ filename: "[name].bundle.css" }),
+    ]
+};
+\end{lstlisting}
+
+В файлы, задаваемые в секции \code{entry} конфига \code{Webpack}, будем писать
+программный код.
+
+Для того, чтобы собрать приложение, нужно выполнить следующие команды:
+
+\begin{lstlisting}
+npm install
+npx webpack --config ./webpack.config.js
+\end{lstlisting}
+
+\subsubsection{Паттерн MVVM}
+
+Паттерн MVVM был создан в Microsoft и использовался при построении архитектуры
+WPF приложений. Он позволяет отделить логику приложения от представления. MVVM
+состоит из 3 компонентов: View (представление), ViewModel (модель
+представления), Model(модель).
+
+\begin{itemize}
+    \item Модель описывает используемые в приложении данные.
+    \item Представление определяет визуальный интерфейс.
+    \item Модель представления связывает модель и представление через механизм
+          привязки данных. Изменение свойства в модели представления должно
+          приводить к такому же изменению в представлении и наоборот.
+\end{itemize}
+
+Фреймворк \code{KnockoutJS} создан как реализация паттерна MVVM.
+
+\subsubsection{\code{observable} объекты}
+
+Чтобы синхронизировать данные между представлением и моделью представления,
+\code{KnockoutJS} использует механизм биндингов, работающий на паттерне
+\code{Observable}: привязки элемента представления к элементу модели
+представления с подпиской на изменения друг друга. Когда изменяется один из этих
+элементов, он автоматически оповещает всех его подписчиков и передает данные о
+всех изменениях.
+
+Это реализуется с помощью объекта \code{observable}. Он создается вызовом
+\code{ko.observable}. \code{Observable} объекты - функции. Вызов функции без
+параметров - чтение, с параметром - запись. Реализовано через функции, а не
+свойства объектов из-за необходимости поддерживать Internet Explorer 6.
+
+Для массивов объектов существует \code{observableArray}. Массивы можно хранить и в
+обычных \code{observable}, но тогда в случае, когда нужно изменить содержание массива
+(например, добавить новый элемент), придется делать это следующим образом:
+
+\begin{lstlisting}
+this.items = ko.observable();
+this.items().push(item);
+\end{lstlisting}
+
+В этом случае изменится не \code{observable} объект, а объект, который он обрамляет и
+оповещения подписчиков не произойдет. В случае с \code{observableArray} этот же код
+будет выглядеть следующим образом: 
+
+\begin{lstlisting}
+this.items = ko.observableArray();
+this.items.push(item);
+\end{lstlisting}
+
+Для того, чтобы это было возможным, \code{observableArray} реализует стандартные
+методы работы над массивами: \code{push}, \code{pop}, \code{shift},
+\code{unshift}, \code{sort}, \code{reverse} и \code{splice}.
+
+Для создаения вычислимых объектов существуют \code{computed} объекты. Они создаются вызовом
+\code{ko.computed} и передачей ему функции вычисления значения этого объекта. Все зависимости
+этой функции от объектов \code{observable} при изменении будут перезапускать вычисление
+этого объекта:
+
+\begin{lstlisting}
+this.composite = ko.computed(() => this.first() + this.second());
+\end{lstlisting}
+
+В этом случае \code{composite} будет вычислен каждый раз, когда \code{first} и \code{second}
+будут изменены.
+
+Также, на изменения отдельных объектов можно подписаться вручную. Это делается с помощью вызова
+функции \code{subscribe} у \code{observable} объекта. Она принимает функцию, которая будет вызвана
+с новым значением каждый раз, когда \code{observable} объект изменится:
+
+\begin{lstlisting}
+const location = ko.observable();
+colation.subscribe(newLocation => webService.getLocationDetails(newLocation));
+\end{lstlisting}
+
+\subsubsection{Привязка данных}
+Для создания привязки \code{KnockoutJS} использует спецификацию HTML5 с использованием атрибутов data-*
+и объявляет свой атрибут \code{data-bind}. Этот атрибут можно указать у объектов в DOM, чтобы привязать
+его свойства к свойствам модели представления:
+
+\begin{lstlisting}
+//index.ts
+import * as ko from 'knockout';
+
+class IndexViewModel {
+    public name: KnockoutObservable<string>;
+    public message: KnockoutObservable<string>
+
+    constructor() {
+        this.name = ko.observable('');
+        this.message = ko.pureComputed(() => `Hello, ${this.name() || 'visitor'}, how are you?`)
+    }
+}
+
+ko.applyBindings(new IndexViewModel());
+
+//Index.cshtml
+<body>
+
+<label for="name">Please, enter your name:</label>
+<input id="name" type="text" data-bind="value: name" />
+<br>
+<span data-bind="text: message"></span>
+
+<script src="~/static/home/index.bundle.js"></script>
+\end{lstlisting}
+
+В этом случае происходит привязка свойства \code{value} HTML инпута к объекту в
+модели представления. Сообщение \code{message} из модели представления
+привязывается к тексту этемента DOM и изменяется каждый раз, когда изменяется
+значение в текстовом поле name (рисунок \ref{fig:binding12}).
+
+\begin{figure}[H]
+    \centering
+    \subfloat[Пустое текстовое поле]{\includegraphics[width=.4\linewidth]{binding1}}
+    \hspace{.15\linewidth}
+    \subfloat[Текстовое поле заполнено]{\includegraphics[width=.4\linewidth]{binding2}}
+    \caption{Пример привязки элементов представления к свойствам модели представления}
+    \label{fig:binding12}
+\end{figure}
+
+Value-биндинг - встроенный в \code{KnockoutJS}, использовать просто любые атрибуты в качестве биндингов
+нельзя, не расширив \code{KnockoutJS} с помощью обработчика биндингов.
+
+Можно создавать биндинги вложенных свойств:
+
+\begin{lstlisting}
+//index.ts
+import * as ko from 'knockout';
+
+interface Person {
+    name: string;
+    age: number;
+}
+
+class IndexViewModel {
+    public person: KnockoutObservable<Person>;
+
+    constructor() {
+        const person = { name: 'Dude', age: 25 };
+        this.person = ko.observable(person);
+    }
+}
+
+ko.applyBindings(new IndexViewModel());
+
+//Index.cshtml
+<span data-bind="text: person().name"></span>
+<br>
+<span data-bind="text: person().age"></span>
+
+<script src="~/static/home/index.bundle.js"></script>
+\end{lstlisting}
+
+Результат привязки изображен на рисунке \code{fig:binding3}:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.4\linewidth]{binding3}
+    \caption{Пример привязки элементов представления к вложенным свойствам модели представления}
+    \label{fig:binding3}
+\end{figure}
+
+\subsection{Реализация версионирования лежащего в БД JSON}
+\subsubsection{Реализация}
+Реализуем версионирование. Для этого необходимо уметь получить версию рассматриваемого JSON из
+всех возможным видов JSON. Это выполняет метод \code{GetVersion(JToken token)}. Далее, имея
+информацию о текущей версии, десериализатор принимает решение как именно десериализовать данный
+объект. При записи в базу все JSON должны приводится к одному виду -- последней версии JSON.
+Для этого используется метод \code{Serialize<T>(T dto)} и класс \code{VersionedJsonDto<T>}.
+\begin{lstlisting}
+public static class ClientMarketSerializationHelper {
+    private const int ActualJsonVersion = 2;
+
+    private static int GetVersion(JToken token) {
+        return token switch {
+            JArray => 1,
+            JObject obj =>
+                obj.TryGetValue("Version", StringComparison.InvariantCulture, out var version)
+                    ? version.ToObject<int>()
+                    : throw new InvalidOperationException("Object JSON should have 'Version' property."),
+            _ => throw new InvalidOperationException("Invalid JSON format.")
+        };
+    }
+
+    public static T Deserialize<T, TU>(string json, Func<string, IEnumerable<TU>, T> mappingFunc) {
+        var jToken = JToken.Parse(json);
+        var version = GetVersion(jToken);
+
+        switch (version) {
+            case 1:
+                var agentBanks = jToken.ToObject<IEnumerable<TU>>();
+                return mappingFunc("", agentBanks);
+            case 2:
+                return ((JObject) jToken).GetValue("Data").ToObject<T>();
+            default:
+                throw new InvalidOperationException($"Unknown JSON version {version}.");
+        }
+    }
+
+    public static string Serialize<T>(T dto) {
+        var versionedDto = new VersionedJsonDto<T>(version: ActualJsonVersion, data: dto);
+        return JsonConvert.SerializeObject(versionedDto);
+    }
+}
+\end{lstlisting}
+\begin{lstlisting}
+public class VersionedJsonDto<T> {
+    public VersionedJsonDto(int version, [NotNull] T data) {
+        Version = version;
+        Data = data ?? throw new ArgumentNullException(nameof(data));
+    }
+
+    public int Version { get; }
+
+    public T Data { get; }
+}
+\end{lstlisting}
+\subsubsection{Тестирование}
+Протестируем все возможные версии JSON и ошибки, которые могут возникнуть:
+\begin{lstlisting}
+public class TestClientMarketSerializationHelper {
+    private class TestClientMarketDto {
+        public TestClientMarketDto([NotNull] string serviceDeliveryRequirements,
+                                [NotNull] IEnumerable<TestAgentBankDto> agentBanks) {
+            ServiceDeliveryRequirements = serviceDeliveryRequirements ?? throw new ArgumentNullException(nameof(serviceDeliveryRequirements));
+            AgentBanks = agentBanks ?? throw new ArgumentNullException(nameof(agentBanks));
+        }
+        public string ServiceDeliveryRequirements { get; }
+
+        public IEnumerable<TestAgentBankDto> AgentBanks { get; }
+    }
+
+    private class TestAgentBankDto {
+        public TestAgentBankDto(int marketId, int? globalCashCorrespondent, [NotNull] string comment, [NotNull] int[] currencyIds) {
+            MarketId = marketId;
+            GlobalCashCorrespondent = globalCashCorrespondent;
+            Comment = comment ?? throw new ArgumentNullException(nameof(comment));
+            CurrencyIds = currencyIds ?? throw new ArgumentNullException(nameof(currencyIds));
+        }
+        public int MarketId { get; }
+
+        public int? GlobalCashCorrespondent { get; }
+
+        public string Comment { get; }
+
+        public int[] CurrencyIds { get; }
+    }
+
+    private static readonly StructuralEqualityComparer<TestAgentBankDto> testAgentBankDtoComparer = new() {
+        x => x.MarketId,
+        x => x.GlobalCashCorrespondent,
+        x => x.Comment
+    };
+
+    private static readonly StructuralEqualityComparer<TestClientMarketDto> clientMarketDtoComparer = new() {
+        { x => x.ServiceDeliveryRequirements, (x, y) => x.Equals(y, StringComparison.InvariantCulture) },
+        { x => x.AgentBanks, (x, y) => x.SequenceEqual(y, testAgentBankDtoComparer) },
+    };
+
+    private readonly Func<string, IEnumerable<TestAgentBankDto>, TestClientMarketDto> mappingFunc =
+        (requirement, agentBanks) => new TestClientMarketDto(requirement, agentBanks);
+
+    [Test]
+    public void TestDeserializationOfEmptyArray() {
+        const string json = "[]";
+        var expected = new TestClientMarketDto(serviceDeliveryRequirements: "", Array.Empty<TestAgentBankDto>());
+
+        var actual = ClientMarketSerializationHelper.Deserialize(json, mappingFunc);
+
+        Assert.That(expected, Is.EqualTo(actual).Using(clientMarketDtoComparer));
+    }
+
+    [Test]
+    public void TestDeserializationOfVersion1() {
+        const string json = @"
+[{
+    'MarketId': 54,
+    'GlobalCashCorrespondent': 15,
+    'Comment': '',
+    'CurrencyIds': [ 1, 2, 3 ]
+},
+{
+    'MarketId': 56,
+    'GlobalCashCorrespondent': null,
+    'Comment': 'Test comment.',
+    'CurrencyIds': [ 3, 4, 5 ]
+}]";
+        var expected = new TestClientMarketDto(serviceDeliveryRequirements: "", new[] {
+            new TestAgentBankDto(marketId: 54, 15, comment: "", new[] { 1, 2, 3 }),
+            new TestAgentBankDto(marketId: 56, null, comment: "Test comment.", new[] { 3, 4, 5 })
+        });
+
+        var actual = ClientMarketSerializationHelper.Deserialize(json, mappingFunc);
+
+        Assert.That(expected, Is.EqualTo(actual).Using(clientMarketDtoComparer));
+    }
+
+    [Test]
+    public void TestDeserializationOfVersion2() {
+        const string json = @"
+{
+    'Version': 2,
+    'Data': {
+        'ServiceDeliveryRequirements': 'Some test requirements',
+        'AgentBanks': [
+            {
+                'MarketId': 54,
+                'GlobalCashCorrespondent': 15,
+                'Comment': '',
+                'CurrencyIds': [ 1, 2, 3 ]
+            },
+            {
+                'MarketId': 56,
+                'GlobalCashCorrespondent': null,
+                'Comment': 'Test comment.',
+                'CurrencyIds': [ 3, 4, 5 ]
+            }
+        ]
+    }
+}";
+        var expected = new TestClientMarketDto(serviceDeliveryRequirements: "Some test requirements", new[] {
+                new TestAgentBankDto(marketId: 54, 15, comment: "", new[] { 1, 2, 3 }),
+                new TestAgentBankDto(marketId: 56, null, comment: "Test comment.", new[] { 3, 4, 5 })
+        });
+
+        var actual = ClientMarketSerializationHelper.Deserialize(json, mappingFunc);
+
+        Assert.That(expected, Is.EqualTo(actual).Using(clientMarketDtoComparer));
+    }
+
+    [Test]
+    public void DeserializationOfObjectJsonWithoutVersionShouldThrowException() {
+        const string json = @"
+{
+    'Data': {
+        'ServiceDeliveryRequirements': 'Some test requirements',
+        'AgentBanks': [
+            {
+                'MarketId': 54,
+                'GlobalCashCorrespondent': 15,
+                'Comment': '',
+                'CurrencyIds': [ 1, 2, 3 ]
+            },
+            {
+                'MarketId': 56,
+                'GlobalCashCorrespondent': null,
+                'Comment': 'Test comment.',
+                'CurrencyIds': [ 3, 4, 5 ]
+            }
+        ]
+    }
+}";
+        Assert.Throws<InvalidOperationException>(
+            () => ClientMarketSerializationHelper.Deserialize(json, mappingFunc),
+            "Object JSON should have 'Version' property.");
+    }
+
+    [Test]
+    public void DeserializationOfScalarValueShouldThrowException() {
+        const string json = "12345";
+        Assert.Throws<InvalidOperationException>(
+            () => ClientMarketSerializationHelper.Deserialize(json, mappingFunc),
+            "Invalid JSON format.");
+    }
+
+    [Test]
+    public void DeserializationOfUnknownJsonVersionShouldThrowException() {
+        const string json = @"
+{
+    'Version': 3,
+    'Data': {
+        'ServiceDeliveryRequirements': '',
+        'AgentBanks': []
+    }
+}";
+        Assert.Throws<InvalidOperationException>(
+            () => ClientMarketSerializationHelper.Deserialize(json, mappingFunc),
+            "Unknown JSON version 3.");
+    }
+}
+\end{lstlisting}
+
+\section{ЗАКЛЮЧЕНИЕ}
+В ходе производственной практики были изучены актульные фреймворки и библиотеки,
+используемые в промышленной \code{.NET} разработке: \code{ASP.NET Core MVC}, \code{EF Core 5},
+\code{Azure Web Service}, \code{KnockoutJs}, СУБД \code{SQL SERVER}.
+
+Кроме того, получены навыки решения реальных промышленных задач, связанных с WEB-разработкой:
+реализация интерактивного дашборда, версионирование хранимых в БД объектов, являющихся состоянием
+веб-страницы. Также получены навыки модульного тестирования классов и методов с помощью библиотеки
+\code{NUnit}, библиотеки моков \code{NSubstitute} в ходе решения задач.
+
+Изучена система учета рабочего времени \code{Agilefant}, используемая на предприятии.
+
+\end{document}
